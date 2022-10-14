@@ -3,6 +3,8 @@ from enum import Enum
 
 from pgzero.actor import Actor
 
+from network import Network
+
 
 # Enumeration des valeurs possible pour chaque point de la grille
 class CaseState(Enum):
@@ -61,6 +63,7 @@ class GridEntity:
 class PacMan(GridEntity):
 
     def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
+        self.network = Network()
         self.xSpeed = 0
         self.ySpeed = 0
         super().__init__(xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight)
@@ -127,3 +130,17 @@ class PacMan(GridEntity):
             if grid[newY][newX] != CaseState.OBSTACLE:
                 self.xPos = newX
                 self.yPos = newY
+
+
+    def send_data(self):
+        data = str(self.network.id) + ":" + str(self.xSpeed) + "," + str(self.ySpeed)
+        reply = self.network.send(data)
+        return reply
+
+    @staticmethod
+    def parse_data(data):
+        try:
+            d = data.split(":")[1].split(",")
+            return int(d[0]), int(d[1])
+        except:
+            return 0,0

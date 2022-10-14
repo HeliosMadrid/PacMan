@@ -31,6 +31,7 @@ deltaTime = 0
 
 # objet encapsulant pac man
 pac_man = None
+player1 = None
 
 # compteur de points
 points = 0
@@ -57,12 +58,13 @@ def loadGrid():
 
 
 def update():
-    global frame, deltaTime, pac_man, grid, points
+    global frame, deltaTime, pac_man, grid, points, player1
 
     # charge la grid si elle n'est pas déjà chargée
     if not grid:
         loadGrid()
         pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        player1 = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
@@ -74,19 +76,38 @@ def update():
     if keyboard.LEFT:
         pac_man.left(grid)
 
+    player1.xSpeed, player1.ySpeed = pac_man.parse_data(pac_man.send_data())
+
+    print(player1.xSpeed)
+    print(pac_man.xSpeed)
+
+    if int(player1.xSpeed) == -1:
+        player1.left(grid)
+    elif int(player1.xSpeed) == 1:
+        player1.right(grid)
+    elif int(player1.ySpeed) == -1:
+        player1.up(grid)
+    elif int(player1.ySpeed) == 1:
+        player1.down(grid)
+    else:
+        print('NO SPEED')
+
     # actualise l'animation
     pac_man.updateImage(frame)
+    player1.updateImage(frame)
 
     # actualise la logique du jeu
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
         pac_man.move(grid)
+        player1.move(grid)
         frame = 0
 
     # calcul delta time
     deltaTime = (frame % frame_rate) / frame_rate
     # augmente frame de 1
     frame += 1
+
 
 
 # fonction qui dessine la grid, juste en affichant des carrés bleus ou noir ou des points ou des gums
@@ -140,6 +161,7 @@ def draw():
     drawGrid()
     # dessine pas man
     pac_man.draw(deltaTime)
+    player1.draw(deltaTime)
 
 
 pgzrun.go()
