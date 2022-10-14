@@ -1,0 +1,2 @@
+pgzrun PacMan.py
+PAUSE
