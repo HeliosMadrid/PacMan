@@ -21,7 +21,7 @@ WIDTH = 480
 HEIGHT = 480
 
 # fréquence à laquelle les personnages sont update(move), 30 équivaut à 2 fois par seconde
-frame_rate = 30
+frame_rate = 15
 
 # variable qui compte les frames, et retourne à 0 toutes les 30 frames
 frame = 0
@@ -63,8 +63,8 @@ def update():
     # charge la grid si elle n'est pas déjà chargée
     if not grid:
         loadGrid()
-        pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        player1 = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        pac_man = PacMan(1, 12, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        player1 = PacMan(1, 12, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
@@ -78,8 +78,9 @@ def update():
 
     player1.xSpeed, player1.ySpeed = pac_man.parse_data(pac_man.send_data())
 
-    print(player1.xSpeed)
-    print(pac_man.xSpeed)
+    # Au pire on utilise ça
+    # player1.xPos, player1.yPos = player1.parse_data(pac_man.send_pos())
+    # C'est ce qu'il faudrait avoir pour que ce soit le plus simple à coder et le plus beau
 
     if int(player1.xSpeed) == -1:
         player1.left(grid)
@@ -89,8 +90,7 @@ def update():
         player1.up(grid)
     elif int(player1.ySpeed) == 1:
         player1.down(grid)
-    else:
-        print('NO SPEED')
+
 
     # actualise l'animation
     pac_man.updateImage(frame)
@@ -107,7 +107,6 @@ def update():
     deltaTime = (frame % frame_rate) / frame_rate
     # augmente frame de 1
     frame += 1
-
 
 
 # fonction qui dessine la grid, juste en affichant des carrés bleus ou noir ou des points ou des gums

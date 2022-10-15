@@ -137,10 +137,17 @@ class PacMan(GridEntity):
         reply = self.network.send(data)
         return reply
 
+
+    def send_pos(self):
+        data = str(self.network.id) + ":" + str(self.xPos) + "," + str(self.yPos)
+        reply = self.network.send(data)
+        return reply
+
+
     @staticmethod
     def parse_data(data):
         try:
             d = data.split(":")[1].split(",")
             return int(d[0]), int(d[1])
         except:
-            return 0,0
+            return 0, 0
