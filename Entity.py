@@ -131,18 +131,15 @@ class PacMan(GridEntity):
                 self.xPos = newX
                 self.yPos = newY
 
-
     def send_data(self):
         data = str(self.network.id) + ":" + str(self.xSpeed) + "," + str(self.ySpeed)
         reply = self.network.send(data)
         return reply
 
-
     def send_pos(self):
         data = str(self.network.id) + ":" + str(self.xPos) + "," + str(self.yPos)
         reply = self.network.send(data)
         return reply
-
 
     @staticmethod
     def parse_data(data):
