@@ -1,4 +1,5 @@
 # Class modélisant une entité sur une grille
+import math
 from enum import Enum
 
 from pgzero.actor import Actor
@@ -31,6 +32,64 @@ def lerp(x1, y1, x2, y2, d):
     x = x1 + ((x2 - x1) * d)
     y = y1 + ((y2 - y1) * d)
     return x, y
+
+
+def chooseTheBest(set_):
+    bestIndex = 0
+    for i in range(len(set_)):
+        if set_[i][2] < set_[bestIndex][2]:
+            bestIndex = i
+    return set_[bestIndex]
+
+
+def dist(x1, y1, x2, y2):
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+
+def isInSet(set_, cell):
+    for c in set_:
+        if c[0] == cell[0] and c[1] == cell[1]:
+            return True, c
+    return False, None
+
+
+def neighbors(grid, cell, targetX, targetY):
+    x, y, g = cell[0], cell[1], cell[3]
+    res = []
+    if y > 0:
+        res.append((x, y - 1, dist(x, y - 1, targetX, targetY), g + 1))
+    if y < len(grid):
+        res.append((x, y + 1, dist(x, y + 1, targetX, targetY), g + 1))
+    if x > 0:
+        res.append((x - 1, y, dist(x - 1, y, targetX, targetY), g + 1))
+    if x < len(grid[0]):
+        res.append((x + 1, y, dist(x + 1, y, targetX, targetY), g + 1))
+    return res
+
+
+# Fonction qui permet de calculer le meilleur chemin pour aller d'un point à un autre
+# Voir A* algorithm : https://en.wikipedia.org/wiki/A*_search_algorithm
+def A_star(grid, x, y, targetX, targetY):
+    searching = True
+    open_set = [(x, y, 0, 0)]
+    closed_set = []
+
+    while searching:
+        current = chooseTheBest(open_set)
+
+        if current[0] == targetX and current[1] == targetY:
+            ...  # Finish
+
+        open_set.remove(current)
+        closed_set.append(current)
+
+        for neighbor in neighbors(grid, current, targetX, targetY):
+            if not (neighbor in closed_set):
+                test = isInSet(open_set, neighbor)
+                if test[0]:
+                    if neighbor[3] < test[1][3]:
+                        open_set.remove(test[1])
+                        open_set.append(neighbor)
 
 
 class GridEntity:
@@ -127,3 +186,8 @@ class PacMan(GridEntity):
             if grid[newY][newX] != CaseState.OBSTACLE:
                 self.xPos = newX
                 self.yPos = newY
+
+
+class Blinky(GridEntity):
+    def track(self, targetX, targetY, grid):
+        ...

@@ -31,6 +31,8 @@ deltaTime = 0
 
 # objet encapsulant pac man
 pac_man = None
+#fantome rouge: suit pac man
+blinky = None
 
 # compteur de points
 points = 0
@@ -63,6 +65,7 @@ def update():
     if not grid:
         loadGrid()
         pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        blinky = GridEntity(25, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
@@ -81,6 +84,7 @@ def update():
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
         pac_man.move(grid)
+        blinky.track()
         frame = 0
 
     # calcul delta time
