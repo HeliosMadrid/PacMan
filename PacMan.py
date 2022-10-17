@@ -59,13 +59,13 @@ def loadGrid():
 
 
 def update():
-    global frame, deltaTime, pac_man, grid, points
+    global frame, deltaTime, pac_man, blinky, grid, points
 
     # charge la grid si elle n'est pas déjà chargée
     if not grid:
         loadGrid()
         pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        blinky = GridEntity(25, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        blinky = Blinky(25, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
@@ -83,8 +83,8 @@ def update():
     # actualise la logique du jeu
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
+        blinky.track(pac_man.xPos, pac_man.yPos, grid)
         pac_man.move(grid)
-        blinky.track()
         frame = 0
 
     # calcul delta time
@@ -144,6 +144,7 @@ def draw():
     drawGrid()
     # dessine pas man
     pac_man.draw(deltaTime)
+    blinky.draw(deltaTime)
 
 
 pgzrun.go()

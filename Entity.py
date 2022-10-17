@@ -14,6 +14,7 @@ class CaseState(Enum):
 
 
 # banque d'image
+blinky_right_0 = 'tiles/blinky_right_0'
 pac_man_left_0 = 'tiles/pac_man_left_0'
 pac_man_right_0 = 'tiles/pac_man_right_0'
 pac_man_down_0 = 'tiles/pac_man_down_0'
@@ -47,9 +48,10 @@ def dist(x1, y1, x2, y2):
 
 
 def isInSet(set_, cell):
-    for c in set_:
+    for i in range(len(set_)):
+        c = set_[i]
         if c[0] == cell[0] and c[1] == cell[1]:
-            return True, c
+            return True, i
     return False, None
 
 
@@ -57,28 +59,37 @@ def neighbors(grid, cell, targetX, targetY):
     x, y, g = cell[0], cell[1], cell[3]
     res = []
     if y > 0:
-        res.append((x, y - 1, dist(x, y - 1, targetX, targetY), g + 1))
+        if grid[y - 1][x] != CaseState.OBSTACLE:
+            res.append((x, y - 1, dist(x, y - 1, targetX, targetY), g + 1, cell))
     if y < len(grid):
-        res.append((x, y + 1, dist(x, y + 1, targetX, targetY), g + 1))
+        if grid[y + 1][x] != CaseState.OBSTACLE:
+            res.append((x, y + 1, dist(x, y + 1, targetX, targetY), g + 1, cell))
     if x > 0:
-        res.append((x - 1, y, dist(x - 1, y, targetX, targetY), g + 1))
+        if grid[y][x - 1] != CaseState.OBSTACLE:
+            res.append((x - 1, y, dist(x - 1, y, targetX, targetY), g + 1, cell))
     if x < len(grid[0]):
-        res.append((x + 1, y, dist(x + 1, y, targetX, targetY), g + 1))
+        if grid[y][x + 1] != CaseState.OBSTACLE:
+            res.append((x + 1, y, dist(x + 1, y, targetX, targetY), g + 1, cell))
     return res
 
 
 # Fonction qui permet de calculer le meilleur chemin pour aller d'un point à un autre
 # Voir A* algorithm : https://en.wikipedia.org/wiki/A*_search_algorithm
 def A_star(grid, x, y, targetX, targetY):
-    searching = True
-    open_set = [(x, y, 0, 0)]
+    if x == targetX and y == targetY:
+        return x, y
+
+    open_set = [(x, y, 0, 0, None)]
     closed_set = []
 
-    while searching:
+    while len(open_set) > 0:
         current = chooseTheBest(open_set)
 
         if current[0] == targetX and current[1] == targetY:
-            ...  # Finish
+            while current[4] is not None:
+                if current[4][4] is None:
+                    return current[0], current[1]
+                current = current[4]
 
         open_set.remove(current)
         closed_set.append(current)
@@ -87,9 +98,10 @@ def A_star(grid, x, y, targetX, targetY):
             if not (neighbor in closed_set):
                 test = isInSet(open_set, neighbor)
                 if test[0]:
-                    if neighbor[3] < test[1][3]:
-                        open_set.remove(test[1])
-                        open_set.append(neighbor)
+                    if neighbor[3] < open_set[test[1]][3]:
+                        open_set[test[1]] = neighbor
+                else:
+                    open_set.append(neighbor)
 
 
 class GridEntity:
@@ -189,5 +201,11 @@ class PacMan(GridEntity):
 
 
 class Blinky(GridEntity):
+    def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
+        super().__init__(xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight)
+        self.actor.image = blinky_right_0
+
     def track(self, targetX, targetY, grid):
-        ...
+        self.prevXPos = self.xPos
+        self.prevYPos = self.yPos
+        self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, targetX, targetY)
