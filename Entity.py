@@ -1,5 +1,6 @@
 # Class modélisant une entité sur une grille
 from enum import Enum
+import json
 
 from pgzero.actor import Actor
 
@@ -132,19 +133,37 @@ class PacMan(GridEntity):
                 self.yPos = newY
 
     def send_data(self):
-        data = str(self.network.id) + ":" + str(self.xSpeed) + "," + str(self.ySpeed)
-        reply = self.network.send(data)
+        data = {
+            "id": self.network.id,
+            "xPos": self.xPos,
+            "yPos": self.yPos,
+            "prevXPos": self.prevXPos,
+            "prevYPos": self.prevYPos,
+            "deltaWidth": self.deltaWidth,
+            "deltaHeight": self.deltaHeight,
+            "topright": self.actor.topright,
+            "xSpeed": self.xSpeed,
+            "ySpeed": self.ySpeed
+        }
+        reply = json.dumps(data)
+        reply = self.network.send(str(reply))
         return reply
 
-    def send_pos(self):
-        data = str(self.network.id) + ":" + str(self.xPos) + "," + str(self.yPos)
-        reply = self.network.send(data)
-        return reply
+
+    def sync(self, data):
+        self.xPos = data['xPos']
+        self.yPos = data['yPos']
+        self.prevXPos = data['prevXPos']
+        self.prevYPos = data['prevYPos']
+        self.deltaWidth = data['deltaWidth']
+        self.deltaHeight = data['deltaHeight']
+        self.actor.topright = data['topright']
+        self.xSpeed = data['xSpeed']
+        self.ySpeed = data['ySpeed']
+        print("yes")
+
 
     @staticmethod
     def parse_data(data):
-        try:
-            d = data.split(":")[1].split(",")
-            return int(d[0]), int(d[1])
-        except:
-            return 0, 0
+        d = json.loads(data)
+        return d

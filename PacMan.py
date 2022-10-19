@@ -76,11 +76,10 @@ def update():
     if keyboard.LEFT:
         pac_man.left(grid)
 
-    player1.xSpeed, player1.ySpeed = pac_man.parse_data(pac_man.send_data())
 
-    # Au pire on utilise ça
-    # player1.xPos, player1.yPos = player1.parse_data(pac_man.send_pos())
-    # C'est ce qu'il faudrait avoir pour que ce soit le plus simple à coder et le plus beau
+    online_data = pac_man.parse_data(pac_man.send_data())
+    print(online_data["id"], player1.network.id)
+    player1.sync(online_data)
 
     if int(player1.xSpeed) == -1:
         player1.left(grid)
