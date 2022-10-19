@@ -153,10 +153,10 @@ def drawGrid():
                 screen.blit(gum_path, (x * deltaWidth, y * deltaHeight))
 
         # quadrillage
-        for y in range(gridHeight):
-            screen.draw.line((0, y * deltaHeight), (WIDTH, y * deltaHeight), 'white')
-        for x in range(gridWidth):
-            screen.draw.line((x * deltaWidth, 0), (x * deltaWidth, HEIGHT), 'white')
+        #for y in range(gridHeight):
+            #screen.draw.line((0, y * deltaHeight), (WIDTH, y * deltaHeight), 'white')
+        #for x in range(gridWidth):
+            #screen.draw.line((x * deltaWidth, 0), (x * deltaWidth, HEIGHT), 'white')
 
 
 # fonction de dessin
