@@ -166,7 +166,7 @@ def draw():
 
     drawGrid()
     #affichage des points
-    screen.draw.filled_rect(Rect((121, 22), (50, 25)), "white")
+    screen.draw.filled_rect(Rect((121, 22), (50, 25)), (220, 220, 220))
     screen.draw.rect(Rect((121, 22), (50, 25)), "black")
     screen.draw.textbox(str(points), ((91, 23), (111, 24)), color="black")
     # dessine pas man
