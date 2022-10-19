@@ -38,7 +38,7 @@ deltaTime = 0
 pac_man = None
 
 # compteur de points
-points = 0
+points = -1
 
 # variable contenant la map
 grid = []
@@ -166,9 +166,9 @@ def draw():
 
     drawGrid()
     #affichage des points
-    screen.draw.filled_rect(Rect((110, 5), (50, 22)), "white")
-    screen.draw.rect(Rect((110, 5), (50, 22)), "black")
-    screen.draw.textbox(str(points), ((83, 7), (103, 20)), color="black")
+    screen.draw.filled_rect(Rect((121, 22), (50, 25)), "white")
+    screen.draw.rect(Rect((121, 22), (50, 25)), "black")
+    screen.draw.textbox(str(points), ((91, 23), (111, 24)), color="black")
     # dessine pas man
     pac_man.draw(deltaTime)
 
