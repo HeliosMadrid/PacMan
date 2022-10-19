@@ -1,6 +1,7 @@
 # Class modélisant une entité sur une grille
 import math
 from enum import Enum
+import random
 
 from pgzero.actor import Actor
 
@@ -14,6 +15,14 @@ class CaseState(Enum):
 
 
 # banque d'image
+clyde_right_0 = 'tiles/clyde_right_0'
+clyde_right_1 = 'tiles/clyde_right_1'
+clyde_left_0 = 'tiles/clyde_left_0'
+clyde_left_1 = 'tiles/clyde_left_1'
+clyde_up_0 = 'tiles/clyde_up_0'
+clyde_up_1 = 'tiles/clyde_up_1'
+clyde_down_0 = 'tiles/clyde_down_0'
+clyde_down_1 = 'tiles/clyde_down_1'
 blinky_right_0 = 'tiles/blinky_right_0'
 blinky_right_1 = 'tiles/blinky_right_1'
 blinky_left_0 = 'tiles/blinky_left_0'
@@ -68,13 +77,13 @@ def neighbors(grid, cell, targetX, targetY):
     if y > 0:
         if grid[y - 1][x] != CaseState.OBSTACLE:
             res.append((x, y - 1, dist(x, y - 1, targetX, targetY), g + 1, cell))
-    if y < len(grid):
+    if y < len(grid) - 1:
         if grid[y + 1][x] != CaseState.OBSTACLE:
             res.append((x, y + 1, dist(x, y + 1, targetX, targetY), g + 1, cell))
     if x > 0:
         if grid[y][x - 1] != CaseState.OBSTACLE:
             res.append((x - 1, y, dist(x - 1, y, targetX, targetY), g + 1, cell))
-    if x < len(grid[0]):
+    if x < len(grid[0]) - 1:
         if grid[y][x + 1] != CaseState.OBSTACLE:
             res.append((x + 1, y, dist(x + 1, y, targetX, targetY), g + 1, cell))
     return res
@@ -232,3 +241,51 @@ class Blinky(GridEntity):
         self.prevXPos = self.xPos
         self.prevYPos = self.yPos
         self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, targetX, targetY)
+
+
+class Clyde(GridEntity):
+
+    def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
+        super().__init__(xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight)
+        self.actor.image = clyde_right_0
+
+    # met à jour l'image pour faire l'animation
+    def updateImage(self, frame):
+        right = clyde_right_0 if frame < 15 else clyde_right_1
+        left = clyde_left_0 if frame < 15 else clyde_left_1
+        down = clyde_down_0 if frame < 15 else clyde_down_1
+        up = clyde_up_0 if frame < 15 else clyde_up_1
+
+        if self.xPos - self.prevXPos > 0:
+            self.actor.image = right
+        elif self.xPos - self.prevXPos < 0:
+            self.actor.image = left
+        elif self.yPos - self.prevYPos > 0:
+            self.actor.image = down
+        elif self.yPos - self.prevYPos < 0:
+            self.actor.image = up
+
+    def move(self, grid, pac_man_xPos, pac_man_yPos):
+        self.prevXPos = self.xPos
+        self.prevYPos = self.yPos
+        if self.xPos != 1 and self.yPos != 1 and dist(self.xPos, self.yPos, pac_man_xPos, pac_man_yPos) < 7:
+            self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, 1, 1)
+        else:
+            pos1 = (self.xPos + 1, self.yPos) if self.xPos < len(grid[0]) - 1 and grid[self.yPos][self.xPos + 1] != CaseState.OBSTACLE else None
+            pos2 = (self.xPos - 1, self.yPos) if self.xPos > 0 and grid[self.yPos][self.xPos - 1] != CaseState.OBSTACLE else None
+            pos3 = (self.xPos, self.yPos - 1) if self.yPos > 0 and grid[self.yPos - 1][self.xPos] != CaseState.OBSTACLE else None
+            pos4 = (self.xPos, self.yPos + 1) if self.yPos < len(grid) - 1 and grid[self.yPos + 1][self.xPos] != CaseState.OBSTACLE else None
+
+            possibilities = []
+
+            if pos1 is not None:
+                possibilities.append(pos1)
+            if pos2 is not None:
+                possibilities.append(pos2)
+            if pos3 is not None:
+                possibilities.append(pos3)
+            if pos4 is not None:
+                possibilities.append(pos4)
+
+            v = random.randint(0, len(possibilities) - 1)
+            self.xPos, self.yPos = possibilities[v]

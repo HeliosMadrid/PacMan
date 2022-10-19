@@ -7,7 +7,6 @@ from pgzero.rect import Rect
 
 from Entity import *
 
-
 # top_left_corner_path = "tiles/top_left_corner.png"
 # top_right_corner_path = "tiles/top_right_corner.png"
 # bottom_right_corner_path = "tiles/bottom_right_corner.png"
@@ -31,8 +30,10 @@ deltaTime = 0
 
 # objet encapsulant pac man
 pac_man = None
-#fantome rouge: suit pac man
+# fantome rouge: suit pac man
 blinky = None
+# fantome orange: bouge aléatoirement mais fuit en haut à gauche si il est trop près de pac man
+clyde = None
 
 # compteur de points
 points = 0
@@ -59,13 +60,14 @@ def loadGrid():
 
 
 def update():
-    global frame, deltaTime, pac_man, blinky, grid, points
+    global frame, deltaTime, pac_man, blinky, clyde, grid, points
 
     # charge la grid si elle n'est pas déjà chargée
     if not grid:
         loadGrid()
         pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
         blinky = Blinky(25, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        clyde = Clyde(10, 11, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
@@ -80,11 +82,13 @@ def update():
     # actualise l'animation
     pac_man.updateImage(frame)
     blinky.updateImage(frame)
+    clyde.updateImage(frame)
 
     # actualise la logique du jeu
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
         blinky.track(pac_man.xPos, pac_man.yPos, grid)
+        clyde.move(grid, pac_man.xPos, pac_man.yPos)
         pac_man.move(grid)
         frame = 0
 
@@ -146,6 +150,6 @@ def draw():
     # dessine pas man
     pac_man.draw(deltaTime)
     blinky.draw(deltaTime)
-
+    clyde.draw(deltaTime)
 
 pgzrun.go()
