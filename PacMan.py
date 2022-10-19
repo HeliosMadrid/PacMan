@@ -95,7 +95,13 @@ def update():
 
 
 # fonction qui dessine la grid, juste en affichant des carrés bleus ou noir ou des points ou des gums
-def drawGrid(deltaWidth, deltaHeight):
+def drawGrid():
+    gridWidth = len(grid[0])
+    gridHeight = len(grid)
+
+    deltaWidth = WIDTH / gridWidth
+    deltaHeight = HEIGHT / gridHeight
+
     for y in range(len(grid)):
         for x in range(len(grid[y])):
             if grid[y][x] == CaseState.OBSTACLE:
@@ -155,22 +161,14 @@ def drawGrid(deltaWidth, deltaHeight):
 
 # fonction de dessin
 def draw():
-    gridWidth = len(grid[0])
-    gridHeight = len(grid)
-
-    deltaWidth = WIDTH / gridWidth
-    deltaHeight = HEIGHT / gridHeight
-
     screen.clear()
     screen.fill('black')
 
-    drawGrid(deltaWidth, deltaHeight)
-
+    drawGrid()
     #affichage des points
-    screen.draw.filled_rect(Rect((8 * deltaWidth, 20), (50, 22)), "white")
-    screen.draw.rect(Rect((8 * deltaWidth, 20), (50, 22)), "black")
-    screen.draw.textbox(str(points), Rect((8 * deltaWidth, 20), (50, 22)), color="black")
-
+    screen.draw.filled_rect(Rect((110, 5), (50, 22)), "white")
+    screen.draw.rect(Rect((110, 5), (50, 22)), "black")
+    screen.draw.textbox(str(points), ((83, 7), (103, 20)), color="black")
     # dessine pas man
     pac_man.draw(deltaTime)
 
