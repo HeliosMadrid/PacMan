@@ -1,21 +1,26 @@
-import pgzrun
-
 import random
 
+import pgzrun
 from pgzero.keyboard import keyboard
-from pgzero.rect import Rect
 
 from Entity import *
 
-
-# top_left_corner_path = "tiles/top_left_corner.png"
-# top_right_corner_path = "tiles/top_right_corner.png"
-# bottom_right_corner_path = "tiles/bottom_right_corner.png"
-# bottom_left_corner_path = "tiles/bottom_left_corner.png"
-# vertical_right_path = "tiles/vertical_right.png"
-# vertical_left_path = "tiles/vertical_left.png"
-# horizontal_top_path = "tiles/horizontal_top.png"
-# horizontal_bottom_path = "tiles/horizontal_bottom.png"
+top_left_corner_path = "tiles/top_left_corner.png"
+top_right_corner_path = "tiles/top_right_corner.png"
+bottom_right_corner_path = "tiles/bottom_right_corner.png"
+bottom_left_corner_path = "tiles/bottom_left_corner.png"
+vertical_right_path = "tiles/vertical_right.png"
+vertical_left_path = "tiles/vertical_left.png"
+horizontal_top_path = "tiles/horizontal_top.png"
+horizontal_bottom_path = "tiles/horizontal_bottom.png"
+bottom_left_corner_in_path = "tiles/bottom_left_corner_in.png"
+bottom_right_corner_in_path = "tiles/bottom_right_corner_in.png"
+top_left_corner_in_path = "tiles/top_left_corner_in.png"
+top_right_corner_in_path = "tiles/top_right_corner_in.png"
+bottom_right_joint_path = "tiles/bottom_right_joint.png"
+bottom_left_joint_path = "tiles/bottom_left_joint.png"
+top_right_joint_path = "tiles/top_right_joint.png"
+top_left_joint_path = "tiles/top_left_joint.png"
 
 WIDTH = 480
 HEIGHT = 480
@@ -100,36 +105,58 @@ def drawGrid():
     for y in range(len(grid)):
         for x in range(len(grid[y])):
             if grid[y][x] == CaseState.OBSTACLE:
-                screen.draw.filled_rect(Rect((x * deltaWidth, y * deltaHeight), (16, 16)), (33, 33, 255))
+                # screen.draw.filled_rect(Rect((x * deltaWidth, y * deltaHeight), (16, 16)), (33, 33, 255))
+                up = grid[y - 1][x] == CaseState.OBSTACLE if y > 0 else False
+                down = grid[y + 1][x] == CaseState.OBSTACLE if y < len(grid) - 1 else False
+                right = grid[y][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 else False
+                left = grid[y][x - 1] == CaseState.OBSTACLE if x > 0 else False
+                up_right = grid[y - 1][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 and y > 0 else False
+                up_left = grid[y - 1][x - 1] == CaseState.OBSTACLE if x > 0 and y > 0 else False
+                down_right = grid[y + 1][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 and y < len(grid) - 1 else False
+                down_left = grid[y + 1][x - 1] == CaseState.OBSTACLE if x > 0 and y < len(grid) - 1 else False
+
+                if down and right and (not up and not left):
+                    screen.blit(top_left_corner_path, (x * deltaWidth, y * deltaHeight))
+                elif left and down and (not up and not right):
+                    screen.blit(top_right_corner_path, (x * deltaWidth, y * deltaHeight))
+                elif left and up and (not down and not right):
+                    screen.blit(bottom_right_corner_path, (x * deltaWidth, y * deltaHeight))
+                elif up and right and (not left and not down):
+                    screen.blit(bottom_left_corner_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and right and not left and down_right and not up_right:
+                    screen.blit(bottom_left_joint_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and not right and left and down_left and not up_left:
+                    screen.blit(bottom_right_joint_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and not right and left and not down_left and up_left:
+                    screen.blit(top_right_joint_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and right and not left and not down_right and up_right:
+                    screen.blit(top_left_joint_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and left and not right:
+                    screen.blit(vertical_right_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and right and not left:
+                    screen.blit(vertical_left_path, (x * deltaWidth, y * deltaHeight))
+                elif left and right and up and not down:
+                    screen.blit(horizontal_bottom_path, (x * deltaWidth, y * deltaHeight))
+                elif left and right and down and not up:
+                    screen.blit(horizontal_top_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and right and left and up_right and up_left and down_right and not down_left:
+                    screen.blit(top_right_corner_in_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and right and left and up_right and up_left and down_left and not down_right:
+                    screen.blit(top_left_corner_in_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and right and left and up_right and not up_left and down_right and down_left:
+                    screen.blit(bottom_right_corner_in_path, (x * deltaWidth, y * deltaHeight))
+                elif up and down and right and left and not up_right and up_left and down_right and down_left:
+                    screen.blit(bottom_left_corner_in_path, (x * deltaWidth, y * deltaHeight))
             elif grid[y][x] == CaseState.POINT:
                 screen.blit(point_path, (x * deltaWidth, y * deltaHeight))
             elif grid[y][x] == CaseState.GUM:
                 screen.blit(gum_path, (x * deltaWidth, y * deltaHeight))
-                # up = grid[y - 1][x] == CaseState.OBSTACLE if y > 0 else False
-                # down = grid[y + 1][x] == CaseState.OBSTACLE if y < len(grid) - 1 else False
-                # right = grid[y][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 else False
-                # left = grid[y][x - 1] == CaseState.OBSTACLE if x > 0 else False
-                # up_right = grid[y - 1][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 and y > 0 else False
-                # up_left = grid[y - 1][x - 1] == CaseState.OBSTACLE if x < 0 and y > 0 else False
-                # down_right = grid[y + 1][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 and y < len(grid) - 1 else False
-                # down_left = grid[y + 1][x - 1] == CaseState.OBSTACLE if x > 0 and y < len(grid) - 1 else False
-                #
-                # if down and right and ((not up and not left) or down_right):
-                #     screen.blit(top_left_corner_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
-                # elif left and down and ((not up and not right) or down_left):
-                #     screen.blit(top_right_corner_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
-                # elif left and up and ((not down and not right) or up_left):
-                #     screen.blit(bottom_right_corner_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
-                # elif up and right and ((not left and not down) or up_right):
-                #     screen.blit(bottom_left_corner_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
-                # elif up and down and left and not right:
-                #     screen.blit(vertical_right_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
-                # elif up and down and right and not left:
-                #     screen.blit(vertical_left_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
-                # elif left and right and up and not down:
-                #     screen.blit(horizontal_bottom_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
-                # elif left and right and down and not up:
-                #     screen.blit(horizontal_top_path, (x * (WIDTH / 30), y * (WIDTH / 30)))
+
+        # quadrillage
+        #for y in range(gridHeight):
+            #screen.draw.line((0, y * deltaHeight), (WIDTH, y * deltaHeight), 'white')
+        #for x in range(gridWidth):
+            #screen.draw.line((x * deltaWidth, 0), (x * deltaWidth, HEIGHT), 'white')
 
 
 # fonction de dessin
