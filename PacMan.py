@@ -136,11 +136,12 @@ def drawGrid():
 def draw():
     screen.clear()
     screen.fill('black')
+
+    drawGrid()
     #affichage des points
     screen.draw.filled_rect(Rect((110, 5), (50, 22)), "white")
     screen.draw.rect(Rect((110, 5), (50, 22)), "black")
     screen.draw.textbox(str(points), ((83, 7), (103, 20)), color="black")
-    drawGrid()
     # dessine pas man
     pac_man.draw(deltaTime)
 
