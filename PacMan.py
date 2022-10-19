@@ -79,6 +79,7 @@ def update():
 
     # actualise l'animation
     pac_man.updateImage(frame)
+    blinky.updateImage(frame)
 
     # actualise la logique du jeu
     if frame % frame_rate == 0:

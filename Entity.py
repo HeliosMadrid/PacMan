@@ -15,6 +15,13 @@ class CaseState(Enum):
 
 # banque d'image
 blinky_right_0 = 'tiles/blinky_right_0'
+blinky_right_1 = 'tiles/blinky_right_1'
+blinky_left_0 = 'tiles/blinky_left_0'
+blinky_left_1 = 'tiles/blinky_left_1'
+blinky_up_0 = 'tiles/blinky_up_0'
+blinky_up_1 = 'tiles/blinky_up_1'
+blinky_down_0 = 'tiles/blinky_down_0'
+blinky_down_1 = 'tiles/blinky_down_1'
 pac_man_left_0 = 'tiles/pac_man_left_0'
 pac_man_right_0 = 'tiles/pac_man_right_0'
 pac_man_down_0 = 'tiles/pac_man_down_0'
@@ -204,6 +211,22 @@ class Blinky(GridEntity):
     def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
         super().__init__(xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight)
         self.actor.image = blinky_right_0
+
+    # met à jour l'image pour faire l'animation
+    def updateImage(self, frame):
+        right = blinky_right_0 if frame < 15 else blinky_right_1
+        left = blinky_left_0 if frame < 15 else blinky_left_1
+        down = blinky_down_0 if frame < 15 else blinky_down_1
+        up = blinky_up_0 if frame < 15 else blinky_up_1
+
+        if self.xPos - self.prevXPos > 0:
+            self.actor.image = right
+        elif self.xPos - self.prevXPos < 0:
+            self.actor.image = left
+        elif self.yPos - self.prevYPos > 0:
+            self.actor.image = down
+        elif self.yPos - self.prevYPos < 0:
+            self.actor.image = up
 
     def track(self, targetX, targetY, grid):
         self.prevXPos = self.xPos
