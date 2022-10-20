@@ -91,11 +91,8 @@ def update():
     # actualise la logique du jeu
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
-        print('1')
         pac_man.move(grid)
-        print('2')
         blinky.track(pac_man.xPos, pac_man.yPos, grid)
-        print('3')
         clyde.move(grid, pac_man.xPos, pac_man.yPos)
         frame = 0
 
