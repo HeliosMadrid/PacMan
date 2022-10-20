@@ -14,7 +14,7 @@ class CaseState(Enum):
     GUM = 3
 
 
-# banque d'image
+# banque d'image pour les animations
 clyde_right_0 = 'tiles/clyde_right_0'
 clyde_right_1 = 'tiles/clyde_right_1'
 clyde_left_0 = 'tiles/clyde_left_0'
@@ -50,12 +50,32 @@ gum_path = "tiles/gum.png"
 # Fonction qui renvoie l'interpolation linéaire entre les points (x1, y1) et (x2, y2) selon d qui est entre 0 et 1,
 # voir https://www.aquaportail.com/pictures2208/interpolation-lineaire.jpg
 def lerp(x1, y1, x2, y2, d):
+    """
+    Args:
+    Coordonnés x et y de l'origine et x et y de l'extrémité du vecteur
+        x1 (int):
+        y1 (int): 
+        x2 (int): 
+        y2 (int): 
+        d (float): souvent appelé deltaTime dans le programme
+
+    Returns:
+        tuple: coordonnés du point sur le vecteur
+    """
     x = x1 + ((x2 - x1) * d)
     y = y1 + ((y2 - y1) * d)
     return x, y
 
 
 def chooseTheBest(set_):
+    """
+    Choisi parmis toutes les possibilités proposés pour le prochain point (pour que la route sois la plus courte) 
+    Args:
+        set_ (list): _description_
+
+    Returns:
+        tuple: le prochain point
+    """
     bestIndex = 0
     for i in range(len(set_)):
         if set_[i][2] < set_[bestIndex][2]:
@@ -64,10 +84,31 @@ def chooseTheBest(set_):
 
 
 def dist(x1, y1, x2, y2):
+    """Calcule la norme d'un vecteur
+
+    Args:
+    Coordonnés x et y de l'origine et x et y de l'extrémité du vecteur 
+        x1 (int)
+        y1 (int)
+        x2 (int)
+        y2 (int)
+
+    Returns:
+        float: norme du vecteur
+    """
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 
 def isInSet(set_, cell):
+    """Je suis pas sûr à remplir
+
+    Args:
+        set_ (_type_): _description_
+        cell (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     for i in range(len(set_)):
         c = set_[i]
         if c[0] == cell[0] and c[1] == cell[1]:
@@ -76,20 +117,31 @@ def isInSet(set_, cell):
 
 
 def neighbors(grid, cell, targetX, targetY):
+    """_summary_
+
+    Args:
+        grid (_type_): _description_
+        cell (_type_): _description_
+        targetX (_type_): _description_
+        targetY (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     x, y, g = cell[0], cell[1], cell[3]
     res = []
-    if y > 0:
-        if grid[y - 1][x] != CaseState.OBSTACLE:
-            res.append((x, y - 1, dist(x, y - 1, targetX, targetY), g + 1, cell))
-    if y < len(grid) - 1:
-        if grid[y + 1][x] != CaseState.OBSTACLE:
-            res.append((x, y + 1, dist(x, y + 1, targetX, targetY), g + 1, cell))
-    if x > 0:
-        if grid[y][x - 1] != CaseState.OBSTACLE:
-            res.append((x - 1, y, dist(x - 1, y, targetX, targetY), g + 1, cell))
-    if x < len(grid[0]) - 1:
-        if grid[y][x + 1] != CaseState.OBSTACLE:
-            res.append((x + 1, y, dist(x + 1, y, targetX, targetY), g + 1, cell))
+    if y > 0 and grid[y - 1][x] != CaseState.OBSTACLE:
+        res.append(
+            (x, y - 1, dist(x, y - 1, targetX, targetY), g + 1, cell))
+    if y < len(grid) - 1 and grid[y + 1][x] != CaseState.OBSTACLE:
+        res.append(
+            (x, y + 1, dist(x, y + 1, targetX, targetY), g + 1, cell))
+    if x > 0 and grid[y][x - 1] != CaseState.OBSTACLE:
+        res.append(
+            (x - 1, y, dist(x - 1, y, targetX, targetY), g + 1, cell))
+    if x < len(grid[0]) - 1 and grid[y][x + 1] != CaseState.OBSTACLE:
+        res.append(
+            (x + 1, y, dist(x + 1, y, targetX, targetY), g + 1, cell))
     return res
 
 
@@ -101,7 +153,7 @@ def A_star(grid, x, y, targetX, targetY):
     open_set = [(x, y, 0, 0, None)]
     closed_set = []
 
-    while len(open_set) > 0:
+    while open_set:
         current = chooseTheBest(open_set)
 
         if current[0] == targetX and current[1] == targetY:
@@ -114,7 +166,7 @@ def A_star(grid, x, y, targetX, targetY):
         closed_set.append(current)
 
         for neighbor in neighbors(grid, current, targetX, targetY):
-            if not (neighbor in closed_set):
+            if neighbor not in closed_set:
                 test = isInSet(open_set, neighbor)
                 if test[0]:
                     if neighbor[3] < open_set[test[1]][3]:
@@ -139,9 +191,10 @@ class GridEntity:
         self.deltaWidth = screenWidth / gridWidth
         self.deltaHeight = screenHeight / gridHeight
 
-        self.actor.topright = ((xPos + 1) * self.deltaWidth, yPos * self.deltaHeight)
+        self.actor.topright = (
+            (xPos + 1) * self.deltaWidth, yPos * self.deltaHeight)
 
-    # fonction de dessein de l'entité
+    # fonction de dessin de l'entity
     def draw(self, dt):
         self.actor.topright = lerp((self.prevXPos + 1) * self.deltaWidth, self.prevYPos * self.deltaHeight,
                                    (self.xPos + 1) * self.deltaWidth, self.yPos * self.deltaHeight, dt)
@@ -222,10 +275,9 @@ class PacMan(GridEntity):
 
         self.prevXPos = self.xPos
         self.prevYPos = self.yPos
-        if 0 < newX < len(grid[0]) and 0 < newY < len(grid):
-            if grid[newY][newX] != CaseState.OBSTACLE:
-                self.xPos = newX
-                self.yPos = newY
+        if 0 < newX < len(grid[0]) and 0 < newY < len(grid) and grid[newY][newX] != CaseState.OBSTACLE:
+            self.xPos = newX
+            self.yPos = newY
 
 
 class Blinky(GridEntity):
@@ -252,7 +304,8 @@ class Blinky(GridEntity):
     def track(self, targetX, targetY, grid):
         self.prevXPos = self.xPos
         self.prevYPos = self.yPos
-        self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, targetX, targetY)
+        self.xPos, self.yPos = A_star(
+            grid, self.xPos, self.yPos, targetX, targetY)
 
 
 class Clyde(GridEntity):
