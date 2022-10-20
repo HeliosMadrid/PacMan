@@ -91,9 +91,15 @@ def update():
     # actualise la logique du jeu
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
-        pac_man.move(grid)
-        blinky.track(pac_man.xPos, pac_man.yPos, grid)
-        clyde.move(grid, pac_man.xPos, pac_man.yPos)
+
+        if pac_man.deathTime < 0:
+            pac_man.move(grid)
+            blinky.track(pac_man.xPos, pac_man.yPos, grid)
+            clyde.move(grid, pac_man.xPos, pac_man.yPos)
+
+        if (blinky.xPos == pac_man.xPos and blinky.yPos == pac_man.yPos or clyde.xPos == pac_man.xPos and clyde.yPos == pac_man.yPos) and pac_man.deathTime < 0:
+            pac_man.deathTime = 0
+
         frame = 0
 
     # calcul delta time
@@ -179,8 +185,9 @@ def draw():
     screen.draw.textbox(str(points), ((91, 23), (111, 24)), color="black")
     # dessine pas man
     pac_man.draw(deltaTime)
-    blinky.draw(deltaTime)
-    clyde.draw(deltaTime)
+    if pac_man.deathTime < 0:
+        blinky.draw(deltaTime)
+        clyde.draw(deltaTime)
 
 
 pgzrun.go()

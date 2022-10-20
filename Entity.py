@@ -39,6 +39,10 @@ pac_man_left_1 = 'tiles/pac_man_left_1'
 pac_man_right_1 = 'tiles/pac_man_right_1'
 pac_man_down_1 = 'tiles/pac_man_down_1'
 pac_man_up_1 = 'tiles/pac_man_up_1'
+pac_man_dying_anim = ['tiles/pac_man_dying_0', 'tiles/pac_man_dying_2', 'tiles/pac_man_dying_3',
+                      'tiles/pac_man_dying_4', 'tiles/pac_man_dying_5', 'tiles/pac_man_dying_6',
+                      'tiles/pac_man_dying_7', 'tiles/pac_man_dying_8', 'tiles/pac_man_dying_9',
+                      'tiles/pac_man_dying_10', 'tiles/pac_man_dying_11']
 point_path = "tiles/point.png"
 gum_path = "tiles/gum.png"
 
@@ -94,7 +98,6 @@ def neighbors(grid, cell, targetX, targetY):
 def A_star(grid, x, y, targetX, targetY):
     if x == targetX and y == targetY:
         return x, y
-
     open_set = [(x, y, 0, 0, None)]
     closed_set = []
 
@@ -150,6 +153,7 @@ class PacMan(GridEntity):
     def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
         self.xSpeed = 0
         self.ySpeed = 0
+        self.deathTime = -1
         super().__init__(xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight)
 
     # met à jour le vecteur de déplacement
@@ -178,19 +182,27 @@ class PacMan(GridEntity):
 
     # met à jour l'image pour faire l'animation
     def updateImage(self, frame):
-        right = pac_man_right_0 if frame < 15 else pac_man_right_1
-        left = pac_man_left_0 if frame < 15 else pac_man_left_1
-        down = pac_man_down_0 if frame < 15 else pac_man_down_1
-        up = pac_man_up_0 if frame < 15 else pac_man_up_1
+        if self.deathTime < 0:
+            right = pac_man_right_0 if frame < 15 else pac_man_right_1
+            left = pac_man_left_0 if frame < 15 else pac_man_left_1
+            down = pac_man_down_0 if frame < 15 else pac_man_down_1
+            up = pac_man_up_0 if frame < 15 else pac_man_up_1
 
-        if self.xSpeed == 1 and self.ySpeed == 0:
-            self.actor.image = right
-        elif self.xSpeed == -1 and self.ySpeed == 0:
-            self.actor.image = left
-        elif self.xSpeed == 0 and self.ySpeed == 1:
-            self.actor.image = down
-        elif self.xSpeed == 0 and self.ySpeed == -1:
-            self.actor.image = up
+            if self.xSpeed == 1 and self.ySpeed == 0:
+                self.actor.image = right
+            elif self.xSpeed == -1 and self.ySpeed == 0:
+                self.actor.image = left
+            elif self.xSpeed == 0 and self.ySpeed == 1:
+                self.actor.image = down
+            elif self.xSpeed == 0 and self.ySpeed == -1:
+                self.actor.image = up
+        else:
+            if self.deathTime < len(pac_man_dying_anim):
+                self.actor.image = pac_man_dying_anim[self.deathTime]
+            else:
+                ...  # Game over
+            if frame % 5 == 0:
+                self.deathTime += 1
 
     # Fonction update qui ramasse les points
     def update(self, grid, points):
@@ -271,10 +283,14 @@ class Clyde(GridEntity):
         if self.xPos != 2 and self.yPos != 2 and dist(self.xPos, self.yPos, pac_man_xPos, pac_man_yPos) < 7:
             self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, 2, 2)
         else:
-            pos1 = (self.xPos + 1, self.yPos) if self.xPos < len(grid[0]) - 1 and grid[self.yPos][self.xPos + 1] != CaseState.OBSTACLE else None
-            pos2 = (self.xPos - 1, self.yPos) if self.xPos > 0 and grid[self.yPos][self.xPos - 1] != CaseState.OBSTACLE else None
-            pos3 = (self.xPos, self.yPos - 1) if self.yPos > 0 and grid[self.yPos - 1][self.xPos] != CaseState.OBSTACLE else None
-            pos4 = (self.xPos, self.yPos + 1) if self.yPos < len(grid) - 1 and grid[self.yPos + 1][self.xPos] != CaseState.OBSTACLE else None
+            pos1 = (self.xPos + 1, self.yPos) if self.xPos < len(grid[0]) - 1 and grid[self.yPos][
+                self.xPos + 1] != CaseState.OBSTACLE else None
+            pos2 = (self.xPos - 1, self.yPos) if self.xPos > 0 and grid[self.yPos][
+                self.xPos - 1] != CaseState.OBSTACLE else None
+            pos3 = (self.xPos, self.yPos - 1) if self.yPos > 0 and grid[self.yPos - 1][
+                self.xPos] != CaseState.OBSTACLE else None
+            pos4 = (self.xPos, self.yPos + 1) if self.yPos < len(grid) - 1 and grid[self.yPos + 1][
+                self.xPos] != CaseState.OBSTACLE else None
 
             possibilities = []
 
