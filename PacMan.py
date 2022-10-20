@@ -66,8 +66,8 @@ def update():
     if not grid:
         loadGrid()
         pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        blinky = Blinky(25, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        clyde = Clyde(10, 11, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        blinky = Blinky(4, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        clyde = Clyde(25, 7, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
@@ -87,8 +87,11 @@ def update():
     # actualise la logique du jeu
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
+        print("1")
         blinky.track(pac_man.xPos, pac_man.yPos, grid)
+        print("2")
         clyde.move(grid, pac_man.xPos, pac_man.yPos)
+        print("3")
         pac_man.move(grid)
         frame = 0
 

@@ -268,8 +268,8 @@ class Clyde(GridEntity):
     def move(self, grid, pac_man_xPos, pac_man_yPos):
         self.prevXPos = self.xPos
         self.prevYPos = self.yPos
-        if self.xPos != 1 and self.yPos != 1 and dist(self.xPos, self.yPos, pac_man_xPos, pac_man_yPos) < 7:
-            self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, 1, 1)
+        if self.xPos != 2 and self.yPos != 2 and dist(self.xPos, self.yPos, pac_man_xPos, pac_man_yPos) < 7:
+            self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, 2, 2)
         else:
             pos1 = (self.xPos + 1, self.yPos) if self.xPos < len(grid[0]) - 1 and grid[self.yPos][self.xPos + 1] != CaseState.OBSTACLE else None
             pos2 = (self.xPos - 1, self.yPos) if self.xPos > 0 and grid[self.yPos][self.xPos - 1] != CaseState.OBSTACLE else None
