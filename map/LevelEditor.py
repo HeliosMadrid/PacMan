@@ -1,5 +1,5 @@
 import math
-
+import pgzrun
 from pgzero.rect import *
 from pgzero.constants import *
 
@@ -46,20 +46,41 @@ def set_case(pos, value):
 def on_mouse_down(pos):
     ...
 
-
 def on_mouse_move(pos, rel, buttons):
     if mouse.LEFT in buttons:
         set_case(pos, False)
     elif mouse.RIGHT in buttons:
         set_case(pos, True)
 
+# teste pour avoir une troisième option dan l'éditeur de niveau
+'''
+def edit (pos, rel, buttons):
+    if mouse.LEFT in buttons :
+        set_case(pos, 1)
+    elif mouse.RIGHT in buttons:
+        set_case(pos, 2)
+    elif mouse.MIDDLE in buttons:
+        set_case(pos, 2)
+'''
+
 
 def drawGrid(screen):
     step = WIDTH / len(level)
     for y in range(len(level)):
         for x in range(len(level[0])):
+            if level
             screen.draw.filled_rect(Rect((x * step, y * step), (x * step + step, y * step + step)),
                                     'green' if level[y][x] else 'red')
+
+        # suite su teste pour l'éditeur  de niveau
+        '''
+        if level[y][x] == 1:
+            screen.draw.filled_rect(Rect((x * step, y * step), (x * step + step, y * step + step)), 'blue')
+        elif level[y][x] == 2:
+            screen.draw.filled_rect(Rect((x * step, y * step), (x * step + step, y * step + step)), 'red')
+        elif level[y][x] == 3:
+            screen.draw.filled_rect(Rect((x * step, y * step), (x * step + step, y * step + step)), 'green')
+        '''
     for y in range(len(level)):
         screen.draw.line((0, y * step), (WIDTH, y * step), 'black')
         screen.draw.line((y * step, 0), (y * step, WIDTH), 'black')
@@ -70,3 +91,5 @@ def draw():
     screen.fill('gray')
     if len(level) > 0:
         drawGrid(screen)
+
+pgzrun.go()
