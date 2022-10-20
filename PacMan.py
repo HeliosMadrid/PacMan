@@ -99,6 +99,7 @@ def update():
 
         if (blinky.xPos == pac_man.xPos and blinky.yPos == pac_man.yPos or clyde.xPos == pac_man.xPos and clyde.yPos == pac_man.yPos) and pac_man.deathTime < 0:
             pac_man.deathTime = 0
+            pac_man.prevXPos, pac_man.prevYPos = pac_man.xPos, pac_man.yPos
 
         frame = 0
 

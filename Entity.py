@@ -101,12 +101,15 @@ def A_star(grid, x, y, targetX, targetY):
     open_set = [(x, y, 0, 0, None)]
     closed_set = []
 
-    while len(open_set) > 0:
+    anti_freeze_counter = 0
+
+    while len(open_set) > 0 and anti_freeze_counter < 50:
         current = chooseTheBest(open_set)
 
         if current[0] == targetX and current[1] == targetY:
             while current[4] is not None:
                 if current[4][4] is None:
+                    print(anti_freeze_counter)
                     return current[0], current[1]
                 current = current[4]
 
@@ -121,6 +124,9 @@ def A_star(grid, x, y, targetX, targetY):
                         open_set[test[1]] = neighbor
                 else:
                     open_set.append(neighbor)
+        anti_freeze_counter += 1
+
+    return x, y
 
 
 class GridEntity:
