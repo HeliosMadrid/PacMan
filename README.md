@@ -14,5 +14,5 @@ PARTI DEDIÉE AUX UTILISATEURS DU PROJET (Professeurs) :
 	Ce projet comporte un script menu qu'il est necessaire de lancer pour jouer au projet. Cliquez simplement sur le bouton jouer pour dirigez Pac Man à l'aide des flèches directionnelles.
 	Les points vous donnent des des points, et les gros points 5 points d'un coup. On ne peut pas gagner réellement, le but est de ramasser un maximum de points.
 	Le fantome rouge, Blinky, vous traquera à l'aide de l'aglorithme A*, le fantome orange, Clyde, se déplace de facon aléatoire mais fuit en haut à gauche quand vous êtes trop près de lui.
-	Le projet comporte également un script LevelEditor.py dans le dossier map qui permet d'editer la map. Clique gauche pour rajouter/enlever des murs et le clique droit pour ajouter/supprimer des gros points.
+	Le projet comporte également un script LevelEditor.py dans le dossier map qui permet d'editer la map. Clique gauche pour rajouter/enlever des murs et le clique droit pour ajouter/supprimer des gros points. Puis entrez <ENTRER> pour enregister les modifications.
 	CEPENDANT le système ne tolère que certains patternes pour les murs, faites des formes simples au possible.
