@@ -116,7 +116,7 @@ def A_star(grid, x, y, targetX, targetY):
         closed_set.append(current)
 
         for neighbor in neighbors(grid, current, targetX, targetY):
-            if not (neighbor in closed_set):
+            if not isInSet(closed_set, neighbor)[0]:
                 test = isInSet(open_set, neighbor)
                 if test[0]:
                     if neighbor[3] < open_set[test[1]][3]:
