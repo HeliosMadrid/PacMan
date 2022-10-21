@@ -48,6 +48,7 @@ def on_mouse_down(pos):
 
 
 def on_mouse_move(pos, rel, buttons):
+    print(buttons)
     if mouse.LEFT in buttons:
         set_case(pos, False)
     elif mouse.RIGHT in buttons:
