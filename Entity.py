@@ -55,6 +55,7 @@ def lerp(x1, y1, x2, y2, d):
     return x, y
 
 
+# Choisit le meilleur choix parmi les choix possibles
 def chooseTheBest(set_):
     bestIndex = 0
     for i in range(len(set_)):
@@ -63,10 +64,13 @@ def chooseTheBest(set_):
     return set_[bestIndex]
 
 
+# Calcule la distance entre 2 points
 def dist(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 
+# Fonction qui porte un nom peut pertinent, en réalité la fonction calcul si une position est dans un ensemble et
+# renvoie aussi si oui l'index dans l'ensemble
 def isInSet(set_, cell):
     for i in range(len(set_)):
         c = set_[i]
@@ -75,6 +79,7 @@ def isInSet(set_, cell):
     return False, None
 
 
+# Fonction qui renvoie l'ensemble des voisins valides d'une case
 def neighbors(grid, cell, targetX, targetY):
     x, y, g = cell[0], cell[1], cell[3]
     res = []
@@ -100,25 +105,36 @@ def neighbors(grid, cell, targetX, targetY):
 # Fonction qui permet de calculer le meilleur chemin pour aller d'un point à un autre
 # Voir A* algorithm : https://en.wikipedia.org/wiki/A*_search_algorithm
 def A_star(grid, x, y, targetX, targetY):
+    # Termine l'algorithme si on est déjà à l'objectif
     if x == targetX and y == targetY:
         return x, y
+
+    # Ensemble qui contient toutes les possibilités à étudier
     open_set = [(x, y, 0, 0, None)]
+    # Ensemble qui contient toutes les possibilités qui ont déjà été étudiées
     closed_set = []
 
+    # compteur d'itération pour éviter une éventuelle boucle infinie
     anti_freeze_counter = 0
 
+    # Répéter tant qu'il reste des possibilités à traiter
     while len(open_set) > 0 and anti_freeze_counter < 50:
+        # Choisit la case à traiter
         current = chooseTheBest(open_set)
 
+        # Vérifie si on est arrivé
         if current[0] == targetX and current[1] == targetY:
             while current[4] is not None:
                 if current[4][4] is None:
+                    # Renvoie la position ou aller
                     return current[0], current[1]
                 current = current[4]
 
+        # Enregister current en tant que case traitée
         open_set.remove(current)
         closed_set.append(current)
 
+        # Ajoute à l'open set tous les voisins de current
         for neighbor in neighbors(grid, current, targetX, targetY):
             if not isInSet(closed_set, neighbor)[0]:
                 test = isInSet(open_set, neighbor)
@@ -132,6 +148,7 @@ def A_star(grid, x, y, targetX, targetY):
     return x, y
 
 
+# Class qui modélise une entitée sur une grille
 class GridEntity:
     # fonction d'initialisation, definissant la position de départ ainsi que l'acteur
     def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
@@ -238,6 +255,7 @@ class PacMan(GridEntity):
                 self.yPos = newY
 
 
+# Fantôme rouge
 class Blinky(GridEntity):
     def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
         super().__init__(xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight)
@@ -259,6 +277,7 @@ class Blinky(GridEntity):
         elif self.yPos - self.prevYPos < 0:
             self.actor.image = up
 
+    # Fonction qui permet à Blinky de traquer Pac Man
     def track(self, targetX, targetY, grid):
         self.prevXPos = self.xPos
         self.prevYPos = self.yPos
@@ -266,6 +285,7 @@ class Blinky(GridEntity):
             grid, self.xPos, self.yPos, targetX, targetY)
 
 
+# Fantôme orange
 class Clyde(GridEntity):
 
     def __init__(self, xPos, yPos, screenWidth, screenHeight, gridWidth, gridHeight):
@@ -288,6 +308,7 @@ class Clyde(GridEntity):
         elif self.yPos - self.prevYPos < 0:
             self.actor.image = up
 
+    # Fonction de déplacement de Clyde décrite dans README.md
     def move(self, grid, pac_man_xPos, pac_man_yPos):
         self.prevXPos = self.xPos
         self.prevYPos = self.yPos
