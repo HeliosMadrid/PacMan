@@ -24,14 +24,18 @@ class Menu:
         self.buttons.append((button, callback_function))
 
     def draw(self):
+        # dessin de tous les boutons
         for button in self.buttons:
             button[0].draw()
 
+        # dessin du tire
         screen.blit(self.title, (300,
                                  self.window_height/3))
 
 
 menu = Menu()
+
+# fonction pour lancer la fenêtre du pac_man
 
 
 def launch_game():
