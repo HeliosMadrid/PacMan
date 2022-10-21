@@ -58,11 +58,6 @@ def loadGrid():
                     row.append(CaseState.POINT)
                 elif c == 'o':
                     row.append(CaseState.GUM)
-                    # 1 chance sur 50 que la case soit un super gum sinon c'est un point
-                    #if random.randint(0, 50) == 0:
-                        #row.append(CaseState.GUM)
-                #else:
-                        #row.append(CaseState.POINT)
                 elif c == 'x':
                     row.append(CaseState.OBSTACLE)
             grid.append(row)
