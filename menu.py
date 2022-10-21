@@ -6,6 +6,7 @@ import sys
 
 from Entity import *
 
+
 # la class qui contient tout les objets du menu
 
 
@@ -27,19 +28,26 @@ class Menu:
     def add_button(self, button, callback_function):
         self.buttons.append((button, callback_function))
 
+    def strFromInt(nb):
+        res = str(nb)
+        return '0' * (4 - len(res)) + res
+
     # permet de dessiner tout les items du menu
-    def draw(self):
+    def draw(self, frame):
+        screen.blit('anim/' + Menu.strFromInt(frame), (0, 0))
+
         # dessin de tous les boutons
         for button in self.buttons:
             button[0].draw()
 
         # dessin du tire
         screen.blit(self.title, (300,
-                                 self.window_height/3))
+                                 self.window_height / 3))
 
 
 # création d'une instance menu
 menu = Menu()
+
 
 # fonction pour lancer la fenêtre du pac_man
 
@@ -49,7 +57,7 @@ def launch_game():
 
 
 button_solo = menu.create_button(
-    menu.window_width/2+55, menu.window_height*(2/3), 'play_button', launch_game)
+    menu.window_width / 2 + 55, menu.window_height * (2 / 3), 'play_button', launch_game)
 
 
 def on_mouse_down(pos, button):
@@ -68,13 +76,28 @@ def on_mouse_move(pos):
     on_button = bool(button_solo.collidepoint(pos))
 
 
+frame = 0
+anim_frame = 0
+
+
+def update():
+    global frame, anim_frame
+    if frame % 2 == 0:
+        anim_frame += 1
+
+    frame += 1
+
+    if anim_frame > 250:
+        anim_frame = 1
+
+
 def draw():
     screen.clear()
-    menu.draw()
+    menu.draw(anim_frame)
     # c'est pour dessiner le cercle à côté du bouton jouer quand on passe la souris
     if on_button:
         screen.draw.circle(
-            (menu.window_width/2-10, menu.window_height*(2/3)+8), 5, (200, 200, 0))
+            (menu.window_width / 2 - 10, menu.window_height * (2 / 3) + 8), 5, (200, 200, 0))
 
 
 pgzrun.go()
