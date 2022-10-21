@@ -54,18 +54,6 @@ def on_mouse_down(pos, button):
             level[y][x] = CaseState.GUM if level[y][x] != CaseState.GUM else CaseState.VOID
 
 
-# teste pour avoir une troisième option dan l'éditeur de niveau
-'''
-def edit (pos, rel, buttons):
-    if mouse.LEFT in buttons :
-        set_case(pos, 1)
-    elif mouse.RIGHT in buttons:
-        set_case(pos, 2)
-    elif mouse.MIDDLE in buttons:
-        set_case(pos, 2)
-'''
-
-
 def update():
     if not level:
         loadLevel()
