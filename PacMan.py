@@ -1,10 +1,9 @@
-import random
-
 import pgzrun
 from pgzero.keyboard import keyboard
 
 from Entity import *
 
+# Banque d'image pour les murs
 top_left_corner_path = "tiles/top_left_corner.png"
 top_right_corner_path = "tiles/top_right_corner.png"
 bottom_right_corner_path = "tiles/bottom_right_corner.png"
@@ -22,6 +21,7 @@ bottom_left_joint_path = "tiles/bottom_left_joint.png"
 top_right_joint_path = "tiles/top_right_joint.png"
 top_left_joint_path = "tiles/top_left_joint.png"
 
+# dimensions de l'écran de jeu, calculées pour les tiles utilisées NE PAS TOUCHER
 WIDTH = 480
 HEIGHT = 480
 
@@ -54,6 +54,7 @@ def loadGrid():
         for line in levelFile:
             row = []
             for c in line:
+                # Ajoute à l'objet grid les bons états de cases
                 if c == '.':
                     row.append(CaseState.POINT)
                 elif c == 'o':
@@ -69,6 +70,7 @@ def update():
     # charge la grid si elle n'est pas déjà chargée
     if not grid:
         loadGrid()
+        # Initialise les personnages
         pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
         blinky = Blinky(4, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
         clyde = Clyde(7, 25, WIDTH, HEIGHT, len(grid[0]), len(grid))
@@ -90,11 +92,13 @@ def update():
     if frame % frame_rate == 0:
         grid, points = pac_man.update(grid, points)
 
+        # Actualise la position des personnages si Pac Man est vivant <=> si le jeu n'est pas finit
         if pac_man.deathTime < 0:
             pac_man.move(grid)
             blinky.track(pac_man.xPos, pac_man.yPos, grid)
             clyde.move(grid, pac_man.xPos, pac_man.yPos)
 
+        # Vérifie si Pac Man doit mourrir
         if (blinky.xPos == pac_man.xPos and blinky.yPos == pac_man.yPos or clyde.xPos == pac_man.xPos and clyde.yPos == pac_man.yPos) and pac_man.deathTime < 0:
             pac_man.deathTime = 0
             pac_man.prevXPos, pac_man.prevYPos = pac_man.xPos, pac_man.yPos
@@ -115,10 +119,11 @@ def drawGrid():
     deltaWidth = WIDTH / gridWidth
     deltaHeight = HEIGHT / gridHeight
 
+    # Algorithme affichant de facon générique la map
     for y in range(len(grid)):
         for x in range(len(grid[y])):
             if grid[y][x] == CaseState.OBSTACLE:
-                # screen.draw.filled_rect(Rect((x * deltaWidth, y * deltaHeight), (16, 16)), (33, 33, 255))
+                # Récolte des états des cases adjacentes
                 up = grid[y - 1][x] == CaseState.OBSTACLE if y > 0 else False
                 down = grid[y + 1][x] == CaseState.OBSTACLE if y < len(grid) - 1 else False
                 right = grid[y][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 else False
@@ -128,6 +133,7 @@ def drawGrid():
                 down_right = grid[y + 1][x + 1] == CaseState.OBSTACLE if x < len(grid[0]) - 1 and y < len(grid) - 1 else False
                 down_left = grid[y + 1][x - 1] == CaseState.OBSTACLE if x > 0 and y < len(grid) - 1 else False
 
+                # algorithme décidant de l'image à afficher
                 if down and right and (not up and not left):
                     screen.blit(top_left_corner_path, (x * deltaWidth, y * deltaHeight))
                 elif left and down and (not up and not right):
@@ -165,12 +171,6 @@ def drawGrid():
             elif grid[y][x] == CaseState.GUM:
                 screen.blit(gum_path, (x * deltaWidth, y * deltaHeight))
 
-        # quadrillage
-        #for y in range(gridHeight):
-            #screen.draw.line((0, y * deltaHeight), (WIDTH, y * deltaHeight), 'white')
-        #for x in range(gridWidth):
-            #screen.draw.line((x * deltaWidth, 0), (x * deltaWidth, HEIGHT), 'white')
-
 
 # fonction de dessin
 def draw():
@@ -178,12 +178,15 @@ def draw():
     screen.fill('black')
 
     drawGrid()
+
     #affichage des points
     screen.draw.filled_rect(Rect((121, 22), (50, 25)), (220, 220, 220))
     screen.draw.rect(Rect((121, 22), (50, 25)), "black")
     screen.draw.textbox(str(points), ((91, 23), (111, 24)), color="black")
-    # dessine pas man
+
+    # dessine pac man
     pac_man.draw(deltaTime)
+    # Dessine les fantome si le jeu n'est pas finit
     if pac_man.deathTime < 0:
         blinky.draw(deltaTime)
         clyde.draw(deltaTime)
