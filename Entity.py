@@ -80,16 +80,20 @@ def neighbors(grid, cell, targetX, targetY):
     res = []
     if y > 0:
         if grid[y - 1][x] != CaseState.OBSTACLE:
-            res.append((x, y - 1, dist(x, y - 1, targetX, targetY), g + 1, cell))
+            res.append(
+                (x, y - 1, dist(x, y - 1, targetX, targetY), g + 1, cell))
     if y < len(grid) - 1:
         if grid[y + 1][x] != CaseState.OBSTACLE:
-            res.append((x, y + 1, dist(x, y + 1, targetX, targetY), g + 1, cell))
+            res.append(
+                (x, y + 1, dist(x, y + 1, targetX, targetY), g + 1, cell))
     if x > 0:
         if grid[y][x - 1] != CaseState.OBSTACLE:
-            res.append((x - 1, y, dist(x - 1, y, targetX, targetY), g + 1, cell))
+            res.append(
+                (x - 1, y, dist(x - 1, y, targetX, targetY), g + 1, cell))
     if x < len(grid[0]) - 1:
         if grid[y][x + 1] != CaseState.OBSTACLE:
-            res.append((x + 1, y, dist(x + 1, y, targetX, targetY), g + 1, cell))
+            res.append(
+                (x + 1, y, dist(x + 1, y, targetX, targetY), g + 1, cell))
     return res
 
 
@@ -144,7 +148,8 @@ class GridEntity:
         self.deltaWidth = screenWidth / gridWidth
         self.deltaHeight = screenHeight / gridHeight
 
-        self.actor.topright = ((xPos + 1) * self.deltaWidth, yPos * self.deltaHeight)
+        self.actor.topright = (
+            (xPos + 1) * self.deltaWidth, yPos * self.deltaHeight)
 
     # fonction de dessein de l'entité
     def draw(self, dt):
@@ -257,7 +262,8 @@ class Blinky(GridEntity):
     def track(self, targetX, targetY, grid):
         self.prevXPos = self.xPos
         self.prevYPos = self.yPos
-        self.xPos, self.yPos = A_star(grid, self.xPos, self.yPos, targetX, targetY)
+        self.xPos, self.yPos = A_star(
+            grid, self.xPos, self.yPos, targetX, targetY)
 
 
 class Clyde(GridEntity):

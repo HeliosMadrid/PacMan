@@ -1,2 +1,2 @@
-pgzrun PacMan.py
+python menu.py
 PAUSE
