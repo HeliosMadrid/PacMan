@@ -71,9 +71,9 @@ def update():
     if not grid:
         loadGrid()
         # Initialise les personnages
-        pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        blinky = Blinky(4, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        clyde = Clyde(7, 25, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        pac_man = PacMan(12, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        blinky = Blinky(12, 21, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        clyde = Clyde(12, 21, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
@@ -180,9 +180,9 @@ def draw():
     drawGrid()
 
     #affichage des points
-    screen.draw.filled_rect(Rect((121, 22), (50, 25)), (220, 220, 220))
-    screen.draw.rect(Rect((121, 22), (50, 25)), "black")
-    screen.draw.textbox(str(points), ((91, 23), (111, 24)), color="black")
+    screen.draw.filled_rect(Rect((155, 22), (50, 25)), (220, 220, 220))
+    screen.draw.rect(Rect((155, 22), (50, 25)), "black")
+    screen.draw.textbox(str(points), ((120, 23), (120, 24)), color="black")
 
     # dessine pac man
     pac_man.draw(deltaTime)
