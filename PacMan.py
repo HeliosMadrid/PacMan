@@ -74,9 +74,9 @@ def update():
     # charge la grid si elle n'est pas déjà chargée
     if not grid:
         loadGrid()
-        pac_man = PacMan(13, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        blinky = Blinky(4, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
-        clyde = Clyde(7, 25, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        pac_man = PacMan(12, 13, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        blinky = Blinky(12, 21, WIDTH, HEIGHT, len(grid[0]), len(grid))
+        clyde = Clyde(12, 21, WIDTH, HEIGHT, len(grid[0]), len(grid))
 
     # gère les inputs du joueur
     if keyboard.UP:
